@@ -88,6 +88,12 @@
     });
 
     document.title = C.bar.nom + ' — ' + a.rue + ', ' + a.ville;
+
+    var noteCarte = $('#note-carte');
+    if (noteCarte) {
+      noteCarte.hidden = !C.noteCarte;
+      noteCarte.textContent = C.noteCarte || '';
+    }
   }
 
   function listeDeLiens(conteneur, liens) {
@@ -559,9 +565,51 @@
    * Réservation
    * ------------------------------------------------------------- */
 
+  /**
+   * Sans adresse e-mail configurée, un formulaire qui prépare un courriel
+   * n'a nulle part où l'envoyer : on renvoie alors vers le téléphone.
+   */
+  function remplacerFormulaireParTelephone(form) {
+    var bloc = creer('div', { classe: 'appel' });
+    bloc.appendChild(creer('p', {
+      classe: 'appel__texte',
+      texte: 'Les réservations se prennent par téléphone, au comptoir ou par message sur les réseaux du bar.',
+    }));
+
+    if (C.bar.contact.telephone) {
+      var lien = creer('a', {
+        classe: 'bouton bouton--plein',
+        texte: 'Appeler le ' + C.bar.contact.telephone,
+        attrs: { href: 'tel:' + C.bar.contact.telephone.replace(/[^\d+]/g, '') },
+      });
+      bloc.appendChild(lien);
+    }
+
+    (C.bar.reseaux || []).forEach(function (r) {
+      bloc.appendChild(creer('a', {
+        classe: 'bouton',
+        texte: 'Écrire sur ' + r.nom,
+        attrs: { href: r.url, target: '_blank', rel: 'noopener' },
+      }));
+    });
+
+    form.parentNode.replaceChild(bloc, form);
+
+    var intro = $('#reserver .section__intro');
+    if (intro) {
+      intro.textContent = 'Pour les groupes et les soirs de match, mieux vaut prévenir : ' +
+        'un appel suffit.';
+    }
+  }
+
   function brancherFormulaire() {
     var form = $('#formulaire-reservation');
     if (!form) return;
+
+    if (!C.bar.contact.email) {
+      remplacerFormulaireParTelephone(form);
+      return;
+    }
 
     var retour = $('#retour-reservation');
     var champDate = $('#res-date');

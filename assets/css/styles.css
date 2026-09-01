@@ -350,6 +350,28 @@ a:hover { color: var(--texte); }
 .section__entete { margin-bottom: 1.8rem; }
 .section__intro { color: var(--texte-doux); max-width: 58ch; margin: 0; }
 
+.section__note {
+  margin: .8rem 0 0;
+  color: var(--texte-faible);
+  font-size: .85rem;
+  border-left: 2px solid var(--bordure-claire);
+  padding-left: .8rem;
+  max-width: 58ch;
+}
+
+/* Bloc affiché à la place du formulaire quand le bar n'a pas d'e-mail. */
+.appel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .7rem;
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon-large);
+  padding: 1.5rem;
+}
+.appel__texte { flex-basis: 100%; margin: 0 0 .4rem; color: var(--texte-doux); max-width: 52ch; }
+
 /* ------------------------------ La carte ------------------------------ */
 
 .carte-outils {

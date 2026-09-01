@@ -1,101 +1,150 @@
-# Bar Brun — application web
+# Le Café Brun — site et espace d'administration
 
-Site-application du **Bar Brun**, 84 Rue Cauchoise, 76000 Rouen.
+Site du **Café Brun**, 84 Rue Cauchoise, 76000 Rouen — avec un espace
+d'administration protégé par mot de passe pour tenir à jour **les horaires,
+la carte et les événements** sans toucher au code.
 
-Une seule page, consultable au téléphone comme au comptoir :
+Aucune dépendance à installer : tout tourne avec Node seul (version 18 ou plus).
 
-- **Statut en direct** — « ouvert jusqu'à 2 h » / « fermé, ouvre demain à 17 h »,
-  calculé à partir des horaires, y compris les fermetures après minuit et les
-  fermetures exceptionnelles ;
-- **Bandeau happy hour** qui n'apparaît que pendant l'happy hour ;
-- **La carte** avec recherche, filtres par catégorie et par étiquette
-  (local, sans alcool, végétal, nouveau) ;
-- **Agenda** des concerts et soirées : les dates passées disparaissent toutes
-  seules, et chaque événement s'ajoute au calendrier du visiteur (fichier `.ics`
-  généré sur place) ;
-- **Infos & accès** : horaires de la semaine, adresse, itinéraires
-  (Google Maps, Plans, OpenStreetMap), téléphone, e-mail, réseaux ;
-- **Réservation** : le formulaire prépare un e-mail pré-rempli dans la
-  messagerie du visiteur — aucun serveur, aucune donnée collectée ;
-- **Installable** (PWA) et **consultable hors ligne** une fois la page visitée.
-
-Pas de dépendance, pas d'étape de construction : du HTML, du CSS et du
-JavaScript que l'on peut ouvrir et modifier directement.
-
-## Lancer le site en local
+## Démarrage
 
 ```bash
-# depuis la racine du dépôt
-python3 -m http.server 8000
-# puis ouvrir http://localhost:8000
+npm run compte     # crée un compte d'administration (une seule fois)
+npm start          # démarre le serveur
+
+#   Site   → http://localhost:8000/
+#   Admin  → http://localhost:8000/admin
 ```
 
-Ouvrir `index.html` par double-clic fonctionne aussi ; seul le mode hors
-ligne (service worker) demande un vrai serveur.
+Le port se change avec `PORT=3000 npm start`.
 
-## Modifier le contenu
+## Le site public
 
-**Tout se passe dans `data/contenu.js`.** Ce fichier regroupe, en français et
-commenté, l'identité du bar, les horaires, l'happy hour, la carte, l'agenda et
-les rendez-vous hebdomadaires. Aucun autre fichier n'est à toucher pour la vie
-courante du bar.
+- **Statut en direct** — « Ouvert · jusqu'à 2 h », « Fermé · ouvre aujourd'hui
+  à 16 h », calculé à partir des horaires : fermetures après minuit et
+  fermetures exceptionnelles comprises.
+- **Bandeau happy hour** affiché uniquement pendant l'happy hour.
+- **La carte**, avec recherche et filtres (local, sans alcool, végétal, nouveau).
+- **Agenda** : les dates passées disparaissent seules, chaque soirée s'ajoute au
+  calendrier du visiteur (fichier `.ics` généré dans le navigateur).
+- **Infos & accès** : horaires de la semaine, adresse, itinéraires Google Maps /
+  Plans / OpenStreetMap, téléphone, réseaux sociaux.
+- **Réservation** : tant qu'aucune adresse e-mail n'est renseignée, la section
+  invite à appeler le bar. Dès qu'un e-mail est saisi, un formulaire prépare un
+  message dans la messagerie du visiteur (rien n'est envoyé automatiquement).
+- **Installable** sur mobile et **consultable hors ligne**.
 
-Quelques repères :
+## L'espace d'administration
 
-| Ce que vous voulez changer | Où, dans `data/contenu.js` |
+`/admin`, protégé par identifiant et mot de passe. Trois onglets :
+
+| Onglet | Ce qu'on y fait |
 | --- | --- |
-| Téléphone, e-mail, réseaux sociaux | `bar.contact`, `bar.reseaux` |
-| Horaires d'ouverture | `horaires` (un tableau par jour, `[]` = fermé) |
-| Congés, jours fériés | `fermetures` |
-| Happy hour | `happyHour` |
-| Boissons, prix, planches | `carte` |
-| Concerts et soirées | `agenda` |
+| **Horaires** | Ouvertures jour par jour (plusieurs créneaux possibles), jours de fermeture, happy hour, fermetures exceptionnelles |
+| **La carte** | Catégories et articles : nom, description, formats et prix, étiquettes, ordre d'affichage |
+| **Événements** | Concerts et soirées (date, horaires, tarif, description) et rendez-vous hebdomadaires |
 
-Règles à respecter : les prix sont des **nombres** (`6.5`, pas `"6,50 €"`), les
-heures s'écrivent `'17:00'`, les dates `'2026-09-10'`. Une fermeture après
-minuit s'écrit naturellement : `{ ouverture: '17:00', fermeture: '02:00' }`.
+Rien n'est enregistré tant que le bouton **Enregistrer** n'est pas utilisé ; le
+serveur revérifie tout avant d'écrire et affiche la liste des erreurs si quelque
+chose ne va pas. La version précédente est conservée dans `data/sauvegardes/`
+(les vingt dernières).
 
-Après une mise à jour du contenu en production, incrémenter `VERSION` dans
-`sw.js` (par exemple `bar-brun-v2`) pour que les visiteurs qui ont déjà la page
-en cache reçoivent la nouvelle version.
-
-> ⚠️ Les horaires, prix, coordonnées et événements livrés ici sont des
-> **exemples** destinés à la mise en route. Seule l'adresse est réelle.
-> Remplacez-les par les informations du bar avant la mise en ligne.
-
-## Vérifier que tout fonctionne
+### Comptes
 
 ```bash
-npm test    # ou : node tests/verifie.js
+npm run compte            # questions interactives
+npm run compte -- patron  # identifiant en argument, mot de passe demandé
 ```
 
-Le script contrôle la cohérence de `data/contenu.js` (horaires valides, prix
-numériques, dates d'agenda bien formées, catégories sans doublon) et rejoue la
-logique « ouvert / fermé » sur une série d'horaires de référence. Il ne demande
-aucune installation.
+- Le mot de passe fait **10 caractères minimum** et n'est jamais stocké en
+  clair : `comptes.json` ne contient qu'une empreinte **scrypt** avec sel.
+- `comptes.json` n'est **pas versionné** (voir `.gitignore`).
+- Le mot de passe se change depuis l'admin, bouton « Mot de passe ».
+- Les sessions durent 12 heures et vivent en mémoire : redémarrer le serveur
+  déconnecte tout le monde.
+- Après 5 échecs de connexion, l'adresse est bloquée 15 minutes.
+- Cookie `HttpOnly` + `SameSite=Strict`, et un en-tête maison exigé sur toute
+  écriture : les requêtes venues d'un autre site sont refusées.
 
-## Mise en ligne
+Derrière un vrai domaine, servez le site **en HTTPS** et démarrez avec
+`COOKIE_SECURE=1 npm start` pour que le cookie de session ne circule qu'en
+chiffré.
 
-Le site est entièrement statique : n'importe quel hébergement de fichiers
-convient (GitHub Pages, Netlify, OVH, un simple dossier sur un serveur web).
-Pour GitHub Pages, il suffit d'activer Pages sur la branche voulue, à la racine
-du dépôt.
+## Où vit le contenu
+
+```
+data/contenu.json   ← la source de vérité (écrite par l'admin)
+data/contenu.js     ← fichier GÉNÉRÉ, lu par le site public
+```
+
+`data/contenu.js` est réécrit à chaque enregistrement. Le site public n'a donc
+besoin d'aucun serveur pour fonctionner : les fichiers peuvent être déposés tels
+quels sur un hébergement statique, l'admin ne servant qu'à les mettre à jour.
+
+Pour modifier le contenu à la main (sans passer par l'admin) : éditez
+`data/contenu.json`, puis
+
+```bash
+npm run generer     # régénère data/contenu.js
+```
+
+Après une mise en ligne, pensez à incrémenter `VERSION` dans `sw.js` pour que
+les visiteurs ayant déjà la page en cache reçoivent la nouvelle version.
+
+## Vérifications
+
+```bash
+npm test
+```
+
+Le script contrôle, sans rien installer ni toucher aux vraies données :
+
+- la validité de `data/contenu.json` et la synchronisation de `data/contenu.js` ;
+- la logique « ouvert / fermé » (nuits après minuit, jours fermés, congés,
+  happy hour) ;
+- le refus des contenus incorrects (prix en toutes lettres, heures impossibles,
+  identifiants de catégorie en double, dates invalides…) ;
+- les comptes et les sessions (empreintes, mauvais mot de passe, blocage après
+  plusieurs échecs) ;
+- le serveur de bout en bout : accès refusé sans session, refus des requêtes
+  sans en-tête maison, fichiers sensibles non servis, traversée de dossier
+  bloquée, enregistrement valide et refus d'un contenu invalide.
 
 ## Structure
 
 ```
-index.html               page unique
+index.html               le site public
 assets/css/styles.css    mise en forme (bois sombre, laiton)
-assets/js/app.js         horaires, carte, agenda, formulaire
-assets/img/              icônes
-data/contenu.js          ← le fichier à modifier au quotidien
-manifest.webmanifest     installation sur mobile
-sw.js                    cache hors ligne
-tests/verifie.js         vérification du contenu et des horaires
+assets/js/horaires.js    calcul des horaires, partagé site / serveur / tests
+assets/js/app.js         rendu du site public
+admin/                   espace d'administration (connexion + éditeur)
+serveur/serveur.js       serveur HTTP : site, admin et API
+serveur/auth.js          comptes, mots de passe, sessions
+serveur/validation.js    contrôle du contenu avant écriture
+serveur/stockage.js      lecture/écriture et sauvegardes
+data/contenu.json        le contenu du bar
+tests/verifie.js         toutes les vérifications
 ```
+
+## Provenance des informations
+
+Le nom, l'adresse, le téléphone, les horaires (7 j/7 de 16 h à 2 h), l'happy
+hour (17 h – 21 h), la terrasse et les comptes Instagram / Facebook viennent des
+fiches publiques du bar (annuaires, réseaux sociaux). **Ces informations sont à
+vérifier et à corriger depuis l'admin** — les annuaires se contredisent parfois,
+notamment sur l'heure d'ouverture.
+
+La carte est un **squelette indicatif** : les catégories reflètent ce que
+proposent les fiches publiques (bières, vins, cocktails maison, planches), mais
+les articles et les prix sont à saisir depuis l'admin. Aucune adresse e-mail
+publique n'ayant été trouvée, le site renvoie vers le téléphone ; renseignez
+`bar.contact.email` pour activer le formulaire de réservation.
 
 ## Vie privée
 
-Aucun script tiers, aucun cookie, aucune mesure d'audience. Le formulaire de
-réservation n'envoie rien : il ouvre la messagerie du visiteur avec un message
-déjà rédigé.
+Aucun script tiers, aucun cookie sur le site public, aucune mesure d'audience.
+Le seul cookie du projet est celui de la session d'administration.
+
+---
+
+L'abus d'alcool est dangereux pour la santé. À consommer avec modération.

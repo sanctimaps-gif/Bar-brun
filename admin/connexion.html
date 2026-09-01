@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connexion — Le Café Brun</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin admin--connexion">
+  <main class="connexion">
+    <div class="connexion__carte">
+      <p class="connexion__monogramme" aria-hidden="true">CB</p>
+      <h1>Le Café Brun</h1>
+      <p class="connexion__intro">Espace d'administration — horaires, carte et événements.</p>
+
+      <form id="formulaire-connexion" novalidate>
+        <div class="champ">
+          <label for="identifiant">Identifiant</label>
+          <input type="text" id="identifiant" name="identifiant" autocomplete="username" required autofocus>
+        </div>
+
+        <div class="champ">
+          <label for="motdepasse">Mot de passe</label>
+          <input type="password" id="motdepasse" name="motdepasse" autocomplete="current-password" required>
+        </div>
+
+        <p class="connexion__erreur" id="erreur" role="alert" hidden></p>
+
+        <button class="bouton bouton--plein connexion__bouton" type="submit" id="bouton-connexion">
+          Se connecter
+        </button>
+      </form>
+
+      <p class="connexion__aide">
+        Pas encore de compte ? Créez-le sur le serveur avec la commande
+        <code>npm run compte</code>.
+      </p>
+      <p class="connexion__retour"><a href="/">← Retour au site</a></p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var form = document.getElementById('formulaire-connexion');
+      var erreur = document.getElementById('erreur');
+      var bouton = document.getElementById('bouton-connexion');
+
+      form.addEventListener('submit', function (evt) {
+        evt.preventDefault();
+        erreur.hidden = true;
+        bouton.disabled = true;
+        bouton.textContent = 'Connexion…';
+
+        fetch('/api/connexion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Cafe-Brun': '1' },
+          body: JSON.stringify({
+            identifiant: document.getElementById('identifiant').value,
+            motDePasse: document.getElementById('motdepasse').value,
+          }),
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (r) {
+            if (r.ok) {
+              window.location.href = '/admin/';
+              return;
+            }
+            erreur.textContent = r.d.erreur || 'Connexion impossible.';
+            erreur.hidden = false;
+            document.getElementById('motdepasse').value = '';
+            document.getElementById('motdepasse').focus();
+          })
+          .catch(function () {
+            erreur.textContent = 'Le serveur ne répond pas.';
+            erreur.hidden = false;
+          })
+          .finally(function () {
+            bouton.disabled = false;
+            bouton.textContent = 'Se connecter';
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

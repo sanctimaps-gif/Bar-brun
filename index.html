@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bar Brun — 84 rue Cauchoise, Rouen</title>
-  <meta name="description" content="Bar Brun, 84 rue Cauchoise à Rouen : la carte, les horaires, l'agenda des concerts et le formulaire de réservation.">
+  <title>Le Café Brun — 84 rue Cauchoise, Rouen</title>
+  <meta name="description" content="Le Café Brun, 84 rue Cauchoise à Rouen : bar à vin, à bière et à cocktails ouvert 7j/7. Horaires, carte, happy hour et agenda.">
   <meta name="theme-color" content="#1a120b">
 
   <meta property="og:type" content="business.business">
-  <meta property="og:title" content="Bar Brun — 84 rue Cauchoise, Rouen">
-  <meta property="og:description" content="Le comptoir de la rue Cauchoise : bières pression, cocktails, concerts.">
+  <meta property="og:title" content="Le Café Brun — 84 rue Cauchoise, Rouen">
+  <meta property="og:description" content="Bar de quartier rue Cauchoise : bières, vins, cocktails maison et terrasse, 7j/7 jusqu'à 2 h.">
   <meta property="og:locale" content="fr_FR">
 
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -23,8 +23,8 @@
   <header class="entete" id="haut">
     <nav class="nav" aria-label="Navigation principale">
       <a class="nav__marque" href="#haut">
-        <span class="nav__monogramme" aria-hidden="true">BB</span>
-        <span class="nav__nom" data-champ="nom">Bar Brun</span>
+        <span class="nav__monogramme" aria-hidden="true">CB</span>
+        <span class="nav__nom" data-champ="nom">Le Café Brun</span>
       </a>
 
       <button class="nav__bascule" type="button" aria-expanded="false" aria-controls="nav-liens">
@@ -46,7 +46,7 @@
     <section class="hero" aria-labelledby="hero-titre">
       <div class="hero__contenu">
         <p class="hero__accroche" data-champ="accroche"></p>
-        <h1 class="hero__titre" id="hero-titre" data-champ="nom">Bar Brun</h1>
+        <h1 class="hero__titre" id="hero-titre" data-champ="nom">Le Café Brun</h1>
         <p class="hero__adresse">
           <span data-champ="adresse-ligne1">84 Rue Cauchoise</span> ·
           <span data-champ="adresse-ligne2">76000 Rouen</span>
@@ -77,6 +77,7 @@
           Les pressions tournent au fil des arrivages : la carte ci-dessous est celle du
           comptoir, l'ardoise du jour fait foi.
         </p>
+        <p class="section__note" id="note-carte" hidden></p>
       </div>
 
       <div class="carte-outils">
@@ -99,12 +100,13 @@
     <section class="section section--alt" id="agenda" aria-labelledby="agenda-titre">
       <div class="section__entete">
         <h2 id="agenda-titre">Agenda</h2>
-        <p class="section__intro">Concerts, blind tests et dégustations. Entrée libre sauf mention contraire.</p>
+        <p class="section__intro">Concerts, soirées musicales et retransmissions. Entrée libre sauf mention contraire.</p>
       </div>
 
       <ol class="agenda" id="agenda-liste"></ol>
       <p class="agenda__vide" id="agenda-vide" hidden>
-        Rien de programmé pour le moment — la suite se décide au comptoir.
+        Rien de programmé pour l'instant : la suite se décide au comptoir et
+        s'annonce sur les réseaux du bar.
       </p>
 
       <div class="rituels" id="rituels">
@@ -139,8 +141,8 @@
           </address>
           <ul class="liens-plats" id="liens-carte"></ul>
           <p class="infos__note">
-            Rive droite, à cinq minutes à pied de la place du Vieux-Marché.
-            Arrêts de bus et de métro à proximité ; parking Vieux-Marché le plus proche.
+            Rive droite, dans la rue Cauchoise, à quelques minutes à pied de la place
+            du Vieux-Marché. Terrasse en angle de rue.
           </p>
         </div>
 
@@ -211,7 +213,7 @@
   <footer class="pied">
     <div class="pied__grille">
       <div>
-        <p class="pied__nom" data-champ="nom">Bar Brun</p>
+        <p class="pied__nom" data-champ="nom">Le Café Brun</p>
         <p>
           <span data-champ="adresse-ligne1">84 Rue Cauchoise</span> ·
           <span data-champ="adresse-ligne2">76000 Rouen</span>

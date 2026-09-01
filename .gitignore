@@ -4,3 +4,9 @@ Thumbs.db
 *.log
 .idea/
 .vscode/
+
+# Comptes d'administration (empreintes de mots de passe) — jamais versionnés
+comptes.json
+
+# Sauvegardes automatiques du contenu
+data/sauvegardes/

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administration — Le Café Brun</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin">
+  <header class="admin__entete">
+    <div class="admin__marque">
+      <span class="nav__monogramme" aria-hidden="true">CB</span>
+      <div>
+        <strong>Le Café Brun</strong>
+        <span class="admin__sous-titre">Espace d'administration</span>
+      </div>
+    </div>
+
+    <div class="admin__actions">
+      <span class="admin__utilisateur" id="utilisateur"></span>
+      <a class="bouton bouton--discret" href="/" target="_blank" rel="noopener">Voir le site</a>
+      <button class="bouton bouton--discret" type="button" id="bouton-motdepasse">Mot de passe</button>
+      <button class="bouton bouton--discret" type="button" id="bouton-deconnexion">Se déconnecter</button>
+    </div>
+  </header>
+
+  <nav class="onglets" aria-label="Sections modifiables">
+    <button class="onglet" type="button" data-panneau="horaires" aria-selected="true">Horaires</button>
+    <button class="onglet" type="button" data-panneau="carte" aria-selected="false">La carte</button>
+    <button class="onglet" type="button" data-panneau="agenda" aria-selected="false">Événements</button>
+  </nav>
+
+  <main class="admin__contenu">
+    <!-- ─────────────── Horaires ─────────────── -->
+    <section class="panneau" id="panneau-horaires">
+      <h2>Horaires d'ouverture</h2>
+      <p class="panneau__intro">
+        Une fermeture après minuit s'indique telle quelle : ouverture 16 h, fermeture 2 h.
+        Décochez « ouvert » pour un jour de fermeture hebdomadaire.
+      </p>
+
+      <div class="jours" id="jours"></div>
+
+      <h3>Happy hour</h3>
+      <div class="bloc" id="happy-hour"></div>
+
+      <h3>Fermetures exceptionnelles</h3>
+      <p class="panneau__intro">Congés, jours fériés, fermeture technique.</p>
+      <div class="liste" id="fermetures"></div>
+      <button class="bouton" type="button" data-ajouter="fermeture">+ Ajouter une fermeture</button>
+    </section>
+
+    <!-- ─────────────── La carte ─────────────── -->
+    <section class="panneau" id="panneau-carte" hidden>
+      <h2>La carte</h2>
+      <p class="panneau__intro">
+        Chaque catégorie regroupe des articles. Un article peut avoir plusieurs formats
+        (25 cl, 50 cl, verre, bouteille…), chacun avec son prix.
+      </p>
+
+      <div class="champ champ--pleine">
+        <label for="note-carte">Note affichée sous le titre « La carte » (facultatif)</label>
+        <input type="text" id="note-carte">
+      </div>
+
+      <div class="liste" id="categories"></div>
+      <button class="bouton" type="button" data-ajouter="categorie">+ Ajouter une catégorie</button>
+    </section>
+
+    <!-- ─────────────── Agenda ─────────────── -->
+    <section class="panneau" id="panneau-agenda" hidden>
+      <h2>Événements</h2>
+      <p class="panneau__intro">
+        Concerts, blind tests, retransmissions… Les dates passées disparaissent
+        automatiquement du site, inutile de les supprimer.
+      </p>
+
+      <div class="liste" id="evenements"></div>
+      <button class="bouton" type="button" data-ajouter="evenement">+ Ajouter un événement</button>
+
+      <h3>Rendez-vous réguliers</h3>
+      <p class="panneau__intro">Affichés sous l'agenda, dans « Toutes les semaines ».</p>
+      <div class="liste" id="rituels"></div>
+      <button class="bouton" type="button" data-ajouter="rituel">+ Ajouter un rendez-vous</button>
+    </section>
+  </main>
+
+  <div class="barre-enregistrement">
+    <div class="barre-enregistrement__contenu">
+      <p class="barre-enregistrement__etat" id="etat" role="status" aria-live="polite"></p>
+      <div class="barre-enregistrement__boutons">
+        <button class="bouton" type="button" id="bouton-annuler">Annuler mes modifications</button>
+        <button class="bouton bouton--plein" type="button" id="bouton-enregistrer">Enregistrer</button>
+      </div>
+    </div>
+    <ul class="erreurs" id="erreurs" hidden></ul>
+  </div>
+
+  <!-- Changement de mot de passe -->
+  <dialog class="dialogue" id="dialogue-motdepasse">
+    <form method="dialog" id="formulaire-motdepasse">
+      <h2>Changer le mot de passe</h2>
+      <div class="champ">
+        <label for="mdp-ancien">Mot de passe actuel</label>
+        <input type="password" id="mdp-ancien" autocomplete="current-password" required>
+      </div>
+      <div class="champ">
+        <label for="mdp-nouveau">Nouveau mot de passe (10 caractères minimum)</label>
+        <input type="password" id="mdp-nouveau" autocomplete="new-password" required>
+      </div>
+      <div class="champ">
+        <label for="mdp-confirmation">Confirmation</label>
+        <input type="password" id="mdp-confirmation" autocomplete="new-password" required>
+      </div>
+      <p class="connexion__erreur" id="mdp-retour" role="alert" hidden></p>
+      <div class="dialogue__boutons">
+        <button class="bouton" type="button" id="mdp-annuler">Annuler</button>
+        <button class="bouton bouton--plein" type="submit">Changer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/assets/js/horaires.js"></script>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

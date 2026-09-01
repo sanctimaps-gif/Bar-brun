@@ -1,7 +1,7 @@
 {
-  "name": "Bar Brun — 84 rue Cauchoise, Rouen",
-  "short_name": "Bar Brun",
-  "description": "La carte, les horaires et l'agenda du Bar Brun, 84 rue Cauchoise à Rouen.",
+  "name": "Le Café Brun — 84 rue Cauchoise, Rouen",
+  "short_name": "Café Brun",
+  "description": "Horaires, carte, happy hour et agenda du Café Brun, 84 rue Cauchoise à Rouen.",
   "lang": "fr",
   "start_url": "./index.html",
   "scope": "./",
@@ -30,8 +30,17 @@
     }
   ],
   "shortcuts": [
-    { "name": "La carte", "url": "./index.html#carte" },
-    { "name": "Agenda", "url": "./index.html#agenda" },
-    { "name": "Réserver", "url": "./index.html#reserver" }
+    {
+      "name": "La carte",
+      "url": "./index.html#carte"
+    },
+    {
+      "name": "Agenda",
+      "url": "./index.html#agenda"
+    },
+    {
+      "name": "Réserver",
+      "url": "./index.html#reserver"
+    }
   ]
 }

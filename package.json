@@ -1,11 +1,16 @@
 {
-  "name": "bar-brun",
+  "name": "cafe-brun",
   "version": "1.0.0",
   "private": true,
-  "description": "Site-application du Bar Brun — 84 rue Cauchoise, 76000 Rouen.",
+  "description": "Site et espace d'administration du Café Brun — 84 rue Cauchoise, 76000 Rouen.",
   "scripts": {
-    "start": "python3 -m http.server 8000",
+    "start": "node serveur/serveur.js",
+    "compte": "node serveur/creer-compte.js",
+    "generer": "node -e \"require('./serveur/stockage.js').regenerer()\"",
     "test": "node tests/verifie.js"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18"
+  }
 }
