@@ -1,5 +1,5 @@
 /* =============================================================
-   Bar Brun — logique de la page
+   Le Café Brun — logique de la page
    Le contenu vient de data/contenu.js, les horaires de horaires.js.
    ============================================================= */
 
@@ -10,7 +10,7 @@
   var Horaires = window.Horaires;
 
   if (!C || !Horaires) {
-    console.error('Bar Brun : data/contenu.js ou assets/js/horaires.js n\'a pas été chargé.');
+    console.error('Café Brun : data/contenu.js ou assets/js/horaires.js n\'a pas été chargé.');
     return;
   }
 
@@ -514,9 +514,9 @@
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'CALSCALE:GREGORIAN',
-      'PRODID:-//Bar Brun//Agenda//FR',
+      'PRODID:-//Cafe Brun//Agenda//FR',
       'BEGIN:VEVENT',
-      'UID:' + local(e.debut) + '-' + Math.random().toString(36).slice(2, 8) + '@bar-brun',
+      'UID:' + local(e.debut) + '-' + Math.random().toString(36).slice(2, 8) + '@cafe-brun',
       'DTSTAMP:' + utc(new Date()),
       'DTSTART:' + local(e.debut),
       'DTEND:' + local(e.fin),

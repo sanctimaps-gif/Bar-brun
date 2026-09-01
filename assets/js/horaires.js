@@ -1,5 +1,5 @@
 /* =============================================================
-   Bar Brun — calcul des horaires
+   Le Café Brun — calcul des horaires
    Aucune dépendance au navigateur : ce module est aussi chargé
    par tests/verifie.js sous Node.
    ============================================================= */
