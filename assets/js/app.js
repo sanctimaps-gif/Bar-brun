@@ -94,6 +94,34 @@
       noteCarte.hidden = !C.noteCarte;
       noteCarte.textContent = C.noteCarte || '';
     }
+
+    remplirCreditSite();
+  }
+
+  /** Ligne de contact du créateur du site, en bas de page. */
+  function remplirCreditSite() {
+    var bloc = $('#credit-site');
+    if (!bloc) return;
+
+    var credit = C.bar.creditSite;
+    if (!credit || !credit.email) {
+      bloc.hidden = true;
+      return;
+    }
+
+    vider(bloc);
+    bloc.hidden = false;
+
+    if (credit.texte) {
+      bloc.appendChild(document.createTextNode(credit.texte + ' '));
+    }
+    bloc.appendChild(creer('a', {
+      texte: credit.email,
+      attrs: {
+        href: 'mailto:' + credit.email +
+          '?subject=' + encodeURIComponent('Site — ' + C.bar.nom),
+      },
+    }));
   }
 
   function listeDeLiens(conteneur, liens) {

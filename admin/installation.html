@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Premier compte — Le Café Brun</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin admin--connexion">
+  <main class="connexion">
+    <div class="connexion__carte">
+      <p class="connexion__monogramme" aria-hidden="true">CB</p>
+      <h1>Premier compte</h1>
+      <p class="connexion__intro">
+        Aucun compte n'existe encore. Créez celui qui servira à tenir à jour
+        les horaires, la carte et les événements.
+      </p>
+
+      <form id="formulaire-installation" novalidate>
+        <div class="champ">
+          <label for="identifiant">Identifiant</label>
+          <input type="text" id="identifiant" autocomplete="username" required autofocus
+                 placeholder="patron">
+        </div>
+
+        <div class="champ">
+          <label for="motdepasse">Mot de passe (10 caractères minimum)</label>
+          <input type="password" id="motdepasse" autocomplete="new-password" required>
+        </div>
+
+        <div class="champ">
+          <label for="confirmation">Confirmation</label>
+          <input type="password" id="confirmation" autocomplete="new-password" required>
+        </div>
+
+        <p class="connexion__erreur" id="erreur" role="alert" hidden></p>
+
+        <button class="bouton bouton--plein connexion__bouton" type="submit" id="bouton-creer">
+          Créer le compte
+        </button>
+      </form>
+
+      <p class="connexion__aide">
+        Cette page disparaît dès que le compte existe. Les comptes suivants se
+        créent sur le serveur avec <code>npm run compte</code>.
+      </p>
+      <p class="connexion__retour"><a href="/">← Retour au site</a></p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var form = document.getElementById('formulaire-installation');
+      var erreur = document.getElementById('erreur');
+      var bouton = document.getElementById('bouton-creer');
+
+      function afficherErreur(message) {
+        erreur.textContent = message;
+        erreur.hidden = false;
+      }
+
+      form.addEventListener('submit', function (evt) {
+        evt.preventDefault();
+        erreur.hidden = true;
+
+        var motDePasse = document.getElementById('motdepasse').value;
+        if (motDePasse !== document.getElementById('confirmation').value) {
+          afficherErreur('Les deux mots de passe ne correspondent pas.');
+          return;
+        }
+
+        bouton.disabled = true;
+        bouton.textContent = 'Création…';
+
+        fetch('/api/installation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Cafe-Brun': '1' },
+          body: JSON.stringify({
+            identifiant: document.getElementById('identifiant').value,
+            motDePasse: motDePasse,
+          }),
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (r) {
+            if (r.ok) {
+              window.location.href = '/admin/';
+              return;
+            }
+            afficherErreur(r.d.erreur || 'Création impossible.');
+          })
+          .catch(function () {
+            afficherErreur('Le serveur ne répond pas.');
+          })
+          .finally(function () {
+            bouton.disabled = false;
+            bouton.textContent = 'Créer le compte';
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

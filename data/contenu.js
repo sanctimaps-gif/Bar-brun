@@ -33,7 +33,11 @@ window.CONTENU = {
         "url": "https://www.facebook.com/lecafebrun/"
       }
     ],
-    "mentions": "L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Vente d'alcool interdite aux mineurs."
+    "mentions": "L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Vente d'alcool interdite aux mineurs.",
+    "creditSite": {
+      "texte": "Une remarque ou une correction sur ce site ? Écrivez à son créateur :",
+      "email": "sanctimaps@gmail.com"
+    }
   },
   "horaires": {
     "lundi": [

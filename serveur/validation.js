@@ -64,6 +64,19 @@ function verifierContenu(contenu) {
         'L\'adresse e-mail « ' + contact.email + ' » n\'est pas valide.');
     }
 
+    if (bar.creditSite !== undefined && bar.creditSite !== null) {
+      var credit = bar.creditSite;
+      if (!estObjet(credit)) {
+        erreurs.push('Le crédit du site doit être un objet.');
+      } else {
+        exiger(credit.texte === undefined || estTexte(credit.texte),
+          'Crédit du site : le texte doit être du texte.');
+        exiger(estTexte(credit.email), 'Crédit du site : l\'e-mail doit être du texte (vide pour masquer la ligne).');
+        exiger(credit.email === '' || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(credit.email)),
+          'Crédit du site : « ' + credit.email + ' » n\'est pas une adresse e-mail valide.');
+      }
+    }
+
     if (bar.reseaux !== undefined) {
       exiger(Array.isArray(bar.reseaux), 'Les réseaux sociaux doivent former une liste.');
       (bar.reseaux || []).forEach(function (r, i) {

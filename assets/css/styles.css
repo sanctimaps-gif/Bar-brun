@@ -624,6 +624,13 @@ a:hover { color: var(--texte); }
   padding-top: 1rem;
 }
 
+.pied__credit {
+  max-width: var(--largeur);
+  margin: .6rem auto 0;
+  color: var(--texte-faible);
+  font-size: .8rem;
+}
+
 /* ------------------------------ Divers ------------------------------ */
 
 @media (max-width: 560px) {

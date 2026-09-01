@@ -61,6 +61,9 @@ egal('le bar s\'appelle « Le Café Brun »', C.bar.nom, 'Le Café Brun');
 egal('l\'adresse est la bonne', C.bar.adresse.rue, '84 Rue Cauchoise');
 egal('la ville est Rouen', C.bar.adresse.ville, 'Rouen');
 egal('le code postal est celui de Rouen', C.bar.adresse.codePostal, '76000');
+egal('le contact du créateur du site est renseigné', C.bar.creditSite.email, 'sanctimaps@gmail.com');
+verifier('la phrase de contact accompagne l\'adresse',
+  typeof C.bar.creditSite.texte === 'string' && C.bar.creditSite.texte.length > 10);
 
 // data/contenu.js est un fichier généré : il doit refléter le JSON.
 var jsAttendu = stockage.genererJs(C);
@@ -192,6 +195,7 @@ refuse('un happy hour qui finit avant de commencer', function (c) { c.happyHour 
 refuse('un happy hour sans jour', function (c) { c.happyHour = { actif: true, jours: [], debut: '17:00', fin: '19:00', texte: 'x' }; });
 refuse('une adresse de réseau social sans http', function (c) { c.bar.reseaux = [{ nom: 'Instagram', url: 'instagram.com/x' }]; });
 refuse('une carte qui n\'est pas une liste', function (c) { c.carte = {}; });
+refuse('un e-mail de créateur mal formé', function (c) { c.bar.creditSite = { texte: 'x', email: 'arobase-absente' }; });
 
 // À l'inverse, ces contenus doivent passer.
 function accepte(intitule, transformation) {
@@ -205,6 +209,7 @@ accepte('un jour de fermeture hebdomadaire', function (c) { c.horaires.lundi = [
 accepte('un agenda vide', function (c) { c.agenda = []; });
 accepte('un happy hour désactivé', function (c) { c.happyHour = { actif: false }; });
 accepte('un e-mail vide', function (c) { c.bar.contact.email = ''; });
+accepte('un crédit de site sans e-mail (ligne masquée)', function (c) { c.bar.creditSite = { texte: 'x', email: '' }; });
 accepte('deux services dans la même journée', function (c) {
   c.horaires.samedi = [{ ouverture: '11:00', fermeture: '14:00' }, { ouverture: '16:00', fermeture: '02:00' }];
 });
@@ -431,13 +436,88 @@ async function testerServeur() {
   }
 }
 
+/**
+ * Création du premier compte depuis le navigateur, sur un serveur qui
+ * démarre sans aucun compte.
+ */
+async function testerInstallation() {
+  var port = await portLibre();
+  var base = 'http://127.0.0.1:' + port;
+  var comptesVierges = path.join(BAC, 'comptes-installation.json');
+
+  var enfant = require('child_process').spawn(
+    process.execPath, [path.join(RACINE, 'serveur/serveur.js')],
+    {
+      env: Object.assign({}, process.env, {
+        PORT: String(port),
+        CAFE_BRUN_COMPTES: comptesVierges,
+      }),
+      stdio: ['ignore', 'ignore', 'ignore'],
+    }
+  );
+
+  try {
+    if (!(await attendreServeur(base))) {
+      verifier('le serveur d\'installation démarre', false);
+      return;
+    }
+
+    var entetes = { 'Content-Type': 'application/json', 'X-Cafe-Brun': '1' };
+
+    var page = await (await fetch(base + '/admin')).text();
+    verifier('sans compte, /admin propose de créer le premier',
+      page.indexOf('formulaire-installation') !== -1);
+
+    var trop_court = await fetch(base + '/api/installation', {
+      method: 'POST', headers: entetes,
+      body: JSON.stringify({ identifiant: 'patron', motDePasse: 'court' }),
+    });
+    egal('un premier mot de passe trop court est refusé', trop_court.status, 400);
+    verifier('aucun compte n\'a été créé pour autant', !fs.existsSync(comptesVierges));
+
+    var sansEntete = await fetch(base + '/api/installation', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifiant: 'patron', motDePasse: MDP }),
+    });
+    egal('la création sans en-tête maison est refusée', sansEntete.status, 403);
+
+    var creation = await fetch(base + '/api/installation', {
+      method: 'POST', headers: entetes,
+      body: JSON.stringify({ identifiant: 'patron', motDePasse: MDP }),
+    });
+    egal('le premier compte est créé', creation.status, 201);
+    verifier('la création connecte directement',
+      (creation.headers.get('set-cookie') || '').indexOf('cafe_brun_session=') === 0);
+
+    var cookieInstall = (creation.headers.get('set-cookie') || '').split(';')[0];
+    egal('la session ouverte donne accès au contenu',
+      (await fetch(base + '/api/contenu', { headers: { Cookie: cookieInstall } })).status, 200);
+
+    var secondEssai = await fetch(base + '/api/installation', {
+      method: 'POST', headers: entetes,
+      body: JSON.stringify({ identifiant: 'intrus', motDePasse: 'un-autre-mot-de-passe' }),
+    });
+    egal('la porte se referme dès qu\'un compte existe', secondEssai.status, 403);
+
+    var pageApres = await (await fetch(base + '/admin')).text();
+    verifier('/admin redemande ensuite un identifiant',
+      pageApres.indexOf('formulaire-connexion') !== -1);
+
+    verifier('le mot de passe du premier compte n\'est pas stocké en clair',
+      fs.readFileSync(comptesVierges, 'utf8').indexOf(MDP) === -1);
+  } finally {
+    enfant.kill();
+  }
+}
+
 /* ---------------------------------------------------------------
  * Exécution
  * ------------------------------------------------------------- */
 
 testerServeur()
+  .then(testerInstallation)
   .catch(function (e) {
-    echecs.push('le test du serveur a échoué : ' + e.message);
+    echecs.push('les tests du serveur ont échoué : ' + e.message);
   })
   .finally(function () {
     fs.rmSync(BAC, { recursive: true, force: true });

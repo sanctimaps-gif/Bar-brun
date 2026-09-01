@@ -16,44 +16,119 @@
       "email": ""
     },
     "reseaux": [
-      { "nom": "Instagram", "url": "https://www.instagram.com/lecafebrun.rouen/" },
-      { "nom": "Facebook", "url": "https://www.facebook.com/lecafebrun/" }
+      {
+        "nom": "Instagram",
+        "url": "https://www.instagram.com/lecafebrun.rouen/"
+      },
+      {
+        "nom": "Facebook",
+        "url": "https://www.facebook.com/lecafebrun/"
+      }
     ],
-    "mentions": "L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Vente d'alcool interdite aux mineurs."
+    "mentions": "L'abus d'alcool est dangereux pour la santé. À consommer avec modération. Vente d'alcool interdite aux mineurs.",
+    "creditSite": {
+      "texte": "Une remarque ou une correction sur ce site ? Écrivez à son créateur :",
+      "email": "sanctimaps@gmail.com"
+    }
   },
-
   "horaires": {
-    "lundi": [{ "ouverture": "16:00", "fermeture": "02:00" }],
-    "mardi": [{ "ouverture": "16:00", "fermeture": "02:00" }],
-    "mercredi": [{ "ouverture": "16:00", "fermeture": "02:00" }],
-    "jeudi": [{ "ouverture": "16:00", "fermeture": "02:00" }],
-    "vendredi": [{ "ouverture": "16:00", "fermeture": "02:00" }],
-    "samedi": [{ "ouverture": "16:00", "fermeture": "02:00" }],
-    "dimanche": [{ "ouverture": "16:00", "fermeture": "02:00" }]
+    "lundi": [
+      {
+        "ouverture": "16:00",
+        "fermeture": "02:00"
+      }
+    ],
+    "mardi": [
+      {
+        "ouverture": "16:00",
+        "fermeture": "02:00"
+      }
+    ],
+    "mercredi": [
+      {
+        "ouverture": "16:00",
+        "fermeture": "02:00"
+      }
+    ],
+    "jeudi": [
+      {
+        "ouverture": "16:00",
+        "fermeture": "02:00"
+      }
+    ],
+    "vendredi": [
+      {
+        "ouverture": "16:00",
+        "fermeture": "02:00"
+      }
+    ],
+    "samedi": [
+      {
+        "ouverture": "16:00",
+        "fermeture": "02:00"
+      }
+    ],
+    "dimanche": [
+      {
+        "ouverture": "16:00",
+        "fermeture": "02:00"
+      }
+    ]
   },
-
   "fermetures": [],
-
   "happyHour": {
     "actif": true,
-    "jours": ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"],
+    "jours": [
+      "lundi",
+      "mardi",
+      "mercredi",
+      "jeudi",
+      "vendredi",
+      "samedi",
+      "dimanche"
+    ],
     "debut": "17:00",
     "fin": "21:00",
     "texte": "Tarifs réduits au comptoir"
   },
-
   "noteCarte": "Carte indicative, à compléter et à tarifer depuis l'espace d'administration.",
-
   "carte": [
     {
       "id": "bieres",
       "titre": "Bières",
       "note": "Pressions et bouteilles, sélection changeante.",
       "articles": [
-        { "nom": "Pinte du moment", "description": "La pression qui tourne — demandez au comptoir.", "prix": { "50 cl": 6 } },
-        { "nom": "Demi", "description": "La même, en 25 cl.", "prix": { "25 cl": 3.5 } },
-        { "nom": "Bière bouteille", "description": "Sélection de brasseries, à la carte.", "prix": { "33 cl": 6 } },
-        { "nom": "Bière sans alcool", "description": "Blonde houblonnée, 0,4 %.", "prix": { "33 cl": 4 }, "etiquettes": ["sans-alcool"] }
+        {
+          "nom": "Pinte du moment",
+          "description": "La pression qui tourne — demandez au comptoir.",
+          "prix": {
+            "50 cl": 6
+          }
+        },
+        {
+          "nom": "Demi",
+          "description": "La même, en 25 cl.",
+          "prix": {
+            "25 cl": 3.5
+          }
+        },
+        {
+          "nom": "Bière bouteille",
+          "description": "Sélection de brasseries, à la carte.",
+          "prix": {
+            "33 cl": 6
+          }
+        },
+        {
+          "nom": "Bière sans alcool",
+          "description": "Blonde houblonnée, 0,4 %.",
+          "prix": {
+            "33 cl": 4
+          },
+          "etiquettes": [
+            "sans-alcool"
+          ]
+        }
       ]
     },
     {
@@ -61,8 +136,23 @@
       "titre": "Cocktails maison",
       "note": "Préparés au comptoir.",
       "articles": [
-        { "nom": "Cocktail maison", "description": "La sélection change au fil des saisons.", "prix": { "verre": 9 } },
-        { "nom": "Mocktail", "description": "Sans alcool, même soin.", "prix": { "verre": 7 }, "etiquettes": ["sans-alcool"] }
+        {
+          "nom": "Cocktail maison",
+          "description": "La sélection change au fil des saisons.",
+          "prix": {
+            "verre": 9
+          }
+        },
+        {
+          "nom": "Mocktail",
+          "description": "Sans alcool, même soin.",
+          "prix": {
+            "verre": 7
+          },
+          "etiquettes": [
+            "sans-alcool"
+          ]
+        }
       ]
     },
     {
@@ -70,29 +160,75 @@
       "titre": "Vins",
       "note": "Carte des vins au verre et à la bouteille.",
       "articles": [
-        { "nom": "Verre de vin", "description": "Rouge, blanc ou rosé, selon la carte du moment.", "prix": { "verre": 5 } },
-        { "nom": "Bouteille", "description": "Planche de dégustation offerte pour une bouteille partagée.", "prix": { "bouteille": 24 } }
+        {
+          "nom": "Verre de vin",
+          "description": "Rouge, blanc ou rosé, selon la carte du moment.",
+          "prix": {
+            "verre": 5
+          }
+        },
+        {
+          "nom": "Bouteille",
+          "description": "Planche de dégustation offerte pour une bouteille partagée.",
+          "prix": {
+            "bouteille": 24
+          }
+        }
       ]
     },
     {
       "id": "planches",
       "titre": "Planches à partager",
       "articles": [
-        { "nom": "Planche mixte", "description": "Charcuterie et fromages, pain.", "prix": { "2 pers.": 16 }, "etiquettes": ["local"] },
-        { "nom": "Planche végétarienne", "description": "Légumes, houmous, olives, pain.", "prix": { "2 pers.": 14 }, "etiquettes": ["vegan"] }
+        {
+          "nom": "Planche mixte",
+          "description": "Charcuterie et fromages, pain.",
+          "prix": {
+            "2 pers.": 16
+          },
+          "etiquettes": [
+            "local"
+          ]
+        },
+        {
+          "nom": "Planche végétarienne",
+          "description": "Légumes, houmous, olives, pain.",
+          "prix": {
+            "2 pers.": 14
+          },
+          "etiquettes": [
+            "vegan"
+          ]
+        }
       ]
     },
     {
       "id": "softs",
       "titre": "Sans alcool",
       "articles": [
-        { "nom": "Soft", "description": "Sodas, jus de fruits, limonade.", "prix": { "verre": 3.5 }, "etiquettes": ["sans-alcool"] },
-        { "nom": "Café", "description": "Expresso au comptoir.", "prix": { "tasse": 2 }, "etiquettes": ["sans-alcool"] }
+        {
+          "nom": "Soft",
+          "description": "Sodas, jus de fruits, limonade.",
+          "prix": {
+            "verre": 3.5
+          },
+          "etiquettes": [
+            "sans-alcool"
+          ]
+        },
+        {
+          "nom": "Café",
+          "description": "Expresso au comptoir.",
+          "prix": {
+            "tasse": 2
+          },
+          "etiquettes": [
+            "sans-alcool"
+          ]
+        }
       ]
     }
   ],
-
   "agenda": [],
-
   "rituels": []
 }

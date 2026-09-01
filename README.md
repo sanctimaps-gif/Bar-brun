@@ -9,12 +9,16 @@ Aucune dépendance à installer : tout tourne avec Node seul (version 18 ou plus
 ## Démarrage
 
 ```bash
-npm run compte     # crée un compte d'administration (une seule fois)
 npm start          # démarre le serveur
 
 #   Site   → http://localhost:8000/
 #   Admin  → http://localhost:8000/admin
 ```
+
+**Au premier lancement**, `/admin` propose de créer le compte
+d'administration : identifiant, mot de passe, et vous arrivez directement dans
+l'éditeur. Cette page de création disparaît dès que le compte existe ; ensuite,
+`/admin` demande l'identifiant et le mot de passe.
 
 Le port se change avec `PORT=3000 npm start`.
 
@@ -50,6 +54,10 @@ chose ne va pas. La version précédente est conservée dans `data/sauvegardes/`
 (les vingt dernières).
 
 ### Comptes
+
+Le premier compte se crée dans le navigateur, à la première visite de `/admin`.
+Pour en ajouter d'autres ensuite (ou repartir de zéro après un mot de passe
+perdu — supprimez alors `comptes.json`) :
 
 ```bash
 npm run compte            # questions interactives
@@ -108,7 +116,9 @@ Le script contrôle, sans rien installer ni toucher aux vraies données :
   plusieurs échecs) ;
 - le serveur de bout en bout : accès refusé sans session, refus des requêtes
   sans en-tête maison, fichiers sensibles non servis, traversée de dossier
-  bloquée, enregistrement valide et refus d'un contenu invalide.
+  bloquée, enregistrement valide et refus d'un contenu invalide ;
+- la création du premier compte : mot de passe trop court refusé, porte
+  définitivement close dès qu'un compte existe.
 
 ## Structure
 
@@ -117,7 +127,7 @@ index.html               le site public
 assets/css/styles.css    mise en forme (bois sombre, laiton)
 assets/js/horaires.js    calcul des horaires, partagé site / serveur / tests
 assets/js/app.js         rendu du site public
-admin/                   espace d'administration (connexion + éditeur)
+admin/                   espace d'administration (premier compte, connexion, éditeur)
 serveur/serveur.js       serveur HTTP : site, admin et API
 serveur/auth.js          comptes, mots de passe, sessions
 serveur/validation.js    contrôle du contenu avant écriture
@@ -139,6 +149,10 @@ proposent les fiches publiques (bières, vins, cocktails maison, planches), mais
 les articles et les prix sont à saisir depuis l'admin. Aucune adresse e-mail
 publique n'ayant été trouvée, le site renvoie vers le téléphone ; renseignez
 `bar.contact.email` pour activer le formulaire de réservation.
+
+Le pied de page porte une ligne de contact vers le créateur du site
+(`bar.creditSite` dans `data/contenu.json`) : laissez son e-mail vide pour faire
+disparaître la ligne.
 
 ## Vie privée
 

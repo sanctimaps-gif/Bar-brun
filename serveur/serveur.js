@@ -175,6 +175,31 @@ function resoudre(cheminUrl) {
 function traiterApi(req, rep, chemin) {
   var s = sessionDe(req);
 
+  /* --- Création du tout premier compte --- */
+  if (chemin === '/api/installation' && req.method === 'POST') {
+    if (!origineLegitime(req)) return envoyerJson(rep, 403, { erreur: 'Requête refusée.' });
+
+    // Ne fonctionne que tant qu'aucun compte n'existe : dès qu'il y en a un,
+    // cette porte est définitivement close.
+    if (auth.lireComptes().length > 0) {
+      return envoyerJson(rep, 403, { erreur: 'Un compte existe déjà : passez par la page de connexion.' });
+    }
+
+    return lireCorps(req).then(function (corps) {
+      try {
+        var identifiant = auth.creerCompte(corps.identifiant, corps.motDePasse);
+        var jeton = auth.connecter(identifiant, corps.motDePasse, adresseDe(req));
+        console.log('[' + new Date().toISOString() + '] premier compte créé : ' + identifiant);
+        envoyerJson(rep, 201, { identifiant: identifiant },
+          { 'Set-Cookie': cookieSession(jeton.jeton, auth.DUREE_SESSION_MS / 1000) });
+      } catch (e) {
+        envoyerJson(rep, 400, { erreur: e.message });
+      }
+    }).catch(function (e) {
+      envoyerJson(rep, 400, { erreur: e.message });
+    });
+  }
+
   /* --- Connexion --- */
   if (chemin === '/api/connexion' && req.method === 'POST') {
     if (!origineLegitime(req)) return envoyerJson(rep, 403, { erreur: 'Requête refusée.' });
@@ -272,10 +297,12 @@ var serveur = http.createServer(function (req, rep) {
     return envoyerTexte(rep, 405, 'Méthode non autorisée.');
   }
 
-  // L'interface d'administration ne s'ouvre que pour une session valide ;
-  // la page de connexion, elle, reste accessible.
+  // L'interface d'administration ne s'ouvre que pour une session valide.
+  // Sans session : la création du premier compte tant qu'aucun n'existe,
+  // la page de connexion ensuite.
   if ((chemin === '/admin' || chemin === '/admin/') && !sessionDe(req)) {
-    return servirFichier(rep, path.join(RACINE, 'admin', 'connexion.html'));
+    var page = auth.lireComptes().length === 0 ? 'installation.html' : 'connexion.html';
+    return servirFichier(rep, path.join(RACINE, 'admin', page));
   }
 
   var fichier = resoudre(chemin);
@@ -286,7 +313,8 @@ var serveur = http.createServer(function (req, rep) {
 if (require.main === module) {
   if (auth.lireComptes().length === 0) {
     console.log('\n⚠  Aucun compte n\'existe encore.');
-    console.log('   Créez-en un avec :  npm run compte\n');
+    console.log('   Ouvrez /admin dans le navigateur pour créer le premier,');
+    console.log('   ou lancez :  npm run compte\n');
   }
 
   setInterval(auth.nettoyerSessions, 60 * 60 * 1000).unref();
