@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bar Brun — 84 rue Cauchoise, Rouen</title>
+  <meta name="description" content="Bar Brun, 84 rue Cauchoise à Rouen : la carte, les horaires, l'agenda des concerts et le formulaire de réservation.">
+  <meta name="theme-color" content="#1a120b">
+
+  <meta property="og:type" content="business.business">
+  <meta property="og:title" content="Bar Brun — 84 rue Cauchoise, Rouen">
+  <meta property="og:description" content="Le comptoir de la rue Cauchoise : bières pression, cocktails, concerts.">
+  <meta property="og:locale" content="fr_FR">
+
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/icone-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+
+  <header class="entete" id="haut">
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="nav__marque" href="#haut">
+        <span class="nav__monogramme" aria-hidden="true">BB</span>
+        <span class="nav__nom" data-champ="nom">Bar Brun</span>
+      </a>
+
+      <button class="nav__bascule" type="button" aria-expanded="false" aria-controls="nav-liens">
+        <span class="nav__bascule-barres" aria-hidden="true"></span>
+        <span class="visuellement-cache">Ouvrir le menu</span>
+      </button>
+
+      <ul class="nav__liens" id="nav-liens">
+        <li><a href="#carte">La carte</a></li>
+        <li><a href="#agenda">Agenda</a></li>
+        <li><a href="#infos">Infos &amp; accès</a></li>
+        <li><a href="#reserver" class="nav__cta">Réserver</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="contenu">
+    <!-- ══════════════════════════ Accueil ══════════════════════════ -->
+    <section class="hero" aria-labelledby="hero-titre">
+      <div class="hero__contenu">
+        <p class="hero__accroche" data-champ="accroche"></p>
+        <h1 class="hero__titre" id="hero-titre" data-champ="nom">Bar Brun</h1>
+        <p class="hero__adresse">
+          <span data-champ="adresse-ligne1">84 Rue Cauchoise</span> ·
+          <span data-champ="adresse-ligne2">76000 Rouen</span>
+        </p>
+
+        <p class="statut" id="statut" data-etat="inconnu" role="status">
+          <span class="statut__pastille" aria-hidden="true"></span>
+          <span class="statut__texte">Chargement des horaires…</span>
+        </p>
+
+        <p class="banniere-hh" id="banniere-hh" hidden></p>
+
+        <p class="hero__description" data-champ="description"></p>
+
+        <div class="hero__actions">
+          <a class="bouton bouton--plein" href="#carte">Voir la carte</a>
+          <a class="bouton" href="#reserver">Réserver une table</a>
+          <a class="bouton bouton--discret" id="lien-itineraire" href="#infos" target="_blank" rel="noopener">Itinéraire</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════ La carte ══════════════════════════ -->
+    <section class="section" id="carte" aria-labelledby="carte-titre">
+      <div class="section__entete">
+        <h2 id="carte-titre">La carte</h2>
+        <p class="section__intro">
+          Les pressions tournent au fil des arrivages : la carte ci-dessous est celle du
+          comptoir, l'ardoise du jour fait foi.
+        </p>
+      </div>
+
+      <div class="carte-outils">
+        <div class="recherche">
+          <label for="recherche-carte" class="visuellement-cache">Rechercher dans la carte</label>
+          <input type="search" id="recherche-carte" placeholder="Rechercher (bière, cocktail, sans alcool…)" autocomplete="off">
+        </div>
+
+        <div class="filtres" role="group" aria-label="Filtrer par catégorie">
+          <div class="filtres__categories" id="filtres-categories"></div>
+          <div class="filtres__etiquettes" id="filtres-etiquettes"></div>
+        </div>
+      </div>
+
+      <p class="carte-resultat" id="carte-resultat" role="status" aria-live="polite"></p>
+      <div class="carte" id="carte-liste"></div>
+    </section>
+
+    <!-- ══════════════════════════ Agenda ══════════════════════════ -->
+    <section class="section section--alt" id="agenda" aria-labelledby="agenda-titre">
+      <div class="section__entete">
+        <h2 id="agenda-titre">Agenda</h2>
+        <p class="section__intro">Concerts, blind tests et dégustations. Entrée libre sauf mention contraire.</p>
+      </div>
+
+      <ol class="agenda" id="agenda-liste"></ol>
+      <p class="agenda__vide" id="agenda-vide" hidden>
+        Rien de programmé pour le moment — la suite se décide au comptoir.
+      </p>
+
+      <div class="rituels" id="rituels">
+        <h3 class="rituels__titre">Toutes les semaines</h3>
+        <ul class="rituels__liste" id="rituels-liste"></ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════ Infos pratiques ══════════════════════ -->
+    <section class="section" id="infos" aria-labelledby="infos-titre">
+      <div class="section__entete">
+        <h2 id="infos-titre">Infos &amp; accès</h2>
+      </div>
+
+      <div class="infos">
+        <div class="infos__bloc">
+          <h3>Horaires</h3>
+          <table class="horaires" id="horaires">
+            <caption class="visuellement-cache">Horaires d'ouverture de la semaine</caption>
+            <tbody id="horaires-corps"></tbody>
+          </table>
+          <p class="infos__note" id="fermetures" hidden></p>
+          <p class="infos__note" id="note-hh" hidden></p>
+        </div>
+
+        <div class="infos__bloc">
+          <h3>Adresse</h3>
+          <address class="adresse">
+            <span data-champ="adresse-ligne1">84 Rue Cauchoise</span><br>
+            <span data-champ="adresse-ligne2">76000 Rouen</span><br>
+            <span data-champ="pays">France</span>
+          </address>
+          <ul class="liens-plats" id="liens-carte"></ul>
+          <p class="infos__note">
+            Rive droite, à cinq minutes à pied de la place du Vieux-Marché.
+            Arrêts de bus et de métro à proximité ; parking Vieux-Marché le plus proche.
+          </p>
+        </div>
+
+        <div class="infos__bloc">
+          <h3>Nous joindre</h3>
+          <ul class="liens-plats" id="liens-contact"></ul>
+          <h3 class="infos__sous-titre">Suivre le bar</h3>
+          <ul class="liens-plats" id="liens-reseaux"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════ Réservation ══════════════════════ -->
+    <section class="section section--alt" id="reserver" aria-labelledby="reserver-titre">
+      <div class="section__entete">
+        <h2 id="reserver-titre">Réserver une table</h2>
+        <p class="section__intro">
+          Pour les groupes à partir de quatre personnes et les soirs de concert.
+          Le formulaire prépare un message que vous envoyez depuis votre messagerie —
+          rien n'est transmis automatiquement.
+        </p>
+      </div>
+
+      <form class="formulaire" id="formulaire-reservation" novalidate>
+        <div class="champ">
+          <label for="res-nom">Nom</label>
+          <input type="text" id="res-nom" name="nom" required autocomplete="name">
+          <p class="champ__erreur" id="err-nom" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="res-contact">Téléphone ou e-mail</label>
+          <input type="text" id="res-contact" name="contact" required autocomplete="tel">
+          <p class="champ__erreur" id="err-contact" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="res-date">Date</label>
+          <input type="date" id="res-date" name="date" required>
+          <p class="champ__erreur" id="err-date" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="res-heure">Heure</label>
+          <input type="time" id="res-heure" name="heure" required value="19:00" step="900">
+          <p class="champ__erreur" id="err-heure" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="res-personnes">Nombre de personnes</label>
+          <input type="number" id="res-personnes" name="personnes" min="1" max="40" value="4" required>
+          <p class="champ__erreur" id="err-personnes" hidden></p>
+        </div>
+
+        <div class="champ champ--large">
+          <label for="res-message">Message (facultatif)</label>
+          <textarea id="res-message" name="message" rows="3" placeholder="Anniversaire, table près de la fenêtre, allergies…"></textarea>
+        </div>
+
+        <div class="formulaire__pied">
+          <button class="bouton bouton--plein" type="submit">Préparer le message</button>
+          <p class="formulaire__retour" id="retour-reservation" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <div class="pied__grille">
+      <div>
+        <p class="pied__nom" data-champ="nom">Bar Brun</p>
+        <p>
+          <span data-champ="adresse-ligne1">84 Rue Cauchoise</span> ·
+          <span data-champ="adresse-ligne2">76000 Rouen</span>
+        </p>
+      </div>
+      <ul class="pied__liens" id="pied-liens"></ul>
+    </div>
+    <p class="pied__mentions" data-champ="mentions"></p>
+  </footer>
+
+  <script src="data/contenu.js"></script>
+  <script src="assets/js/horaires.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "bar-brun",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site-application du Bar Brun — 84 rue Cauchoise, 76000 Rouen.",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "test": "node tests/verifie.js"
+  },
+  "license": "UNLICENSED"
+}
