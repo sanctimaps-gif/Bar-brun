@@ -4,7 +4,7 @@
    Après une modification du contenu, incrémenter VERSION ci-dessous
    pour que les visiteurs reçoivent la nouvelle version. */
 
-var VERSION = 'cafe-brun-v2';
+var VERSION = 'cafe-brun-v3';
 
 var FICHIERS = [
   './',
@@ -12,6 +12,7 @@ var FICHIERS = [
   './assets/css/styles.css',
   './assets/js/horaires.js',
   './assets/js/app.js',
+  './assets/js/compte.js',
   './data/contenu.js',
   './assets/img/favicon.svg',
   './manifest.webmanifest',
@@ -47,6 +48,11 @@ self.addEventListener('fetch', function (evt) {
 
   var url = new URL(evt.request.url);
   if (url.origin !== self.location.origin) return;
+
+  // L'API et l'espace d'administration ne sont jamais mis en cache : une
+  // réponse d'authentification périmée n'a aucun sens, et servirait un état
+  // faux au tiroir « Compte ».
+  if (url.pathname.indexOf('/api/') === 0 || url.pathname.indexOf('/admin') === 0) return;
 
   evt.respondWith(
     fetch(evt.request)

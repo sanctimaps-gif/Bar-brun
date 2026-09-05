@@ -224,7 +224,12 @@ function traiterApi(req, rep, chemin) {
 
   /* --- État de la session --- */
   if (chemin === '/api/session' && req.method === 'GET') {
-    return envoyerJson(rep, 200, s ? { connecte: true, identifiant: s.identifiant } : { connecte: false });
+    // « compteExiste » permet au tiroir du site public de proposer la création
+    // du mot de passe la toute première fois, et la connexion ensuite.
+    var compteExiste = auth.lireComptes().length > 0;
+    return envoyerJson(rep, 200, s
+      ? { connecte: true, identifiant: s.identifiant, compteExiste: compteExiste }
+      : { connecte: false, compteExiste: compteExiste });
   }
 
   // Tout ce qui suit demande d'être connecté.

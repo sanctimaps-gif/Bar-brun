@@ -15,10 +15,11 @@ npm start          # démarre le serveur
 #   Admin  → http://localhost:8000/admin
 ```
 
-**Au premier lancement**, `/admin` propose de créer le compte
-d'administration : identifiant, mot de passe, et vous arrivez directement dans
-l'éditeur. Cette page de création disparaît dès que le compte existe ; ensuite,
-`/admin` demande l'identifiant et le mot de passe.
+**Tout passe par le site lui-même** : une languette discrète « Compte » longe le
+bord droit de la page. Au premier clic, elle propose de choisir le mot de passe ;
+ensuite, il suffit de le saisir pour arriver dans l'éditeur des horaires, de la
+carte et des événements. `/admin` reste accessible directement, avec le même
+comportement.
 
 Le port se change avec `PORT=3000 npm start`.
 
@@ -40,7 +41,9 @@ Le port se change avec `PORT=3000 npm start`.
 
 ## L'espace d'administration
 
-`/admin`, protégé par identifiant et mot de passe. Trois onglets :
+On y entre par la languette « Compte » du site (bord droit) ou directement par
+`/admin`. Un seul mot de passe suffit — l'identifiant n'est demandé que si
+plusieurs comptes coexistent. Trois onglets :
 
 | Onglet | Ce qu'on y fait |
 | --- | --- |
@@ -55,9 +58,10 @@ chose ne va pas. La version précédente est conservée dans `data/sauvegardes/`
 
 ### Comptes
 
-Le premier compte se crée dans le navigateur, à la première visite de `/admin`.
-Pour en ajouter d'autres ensuite (ou repartir de zéro après un mot de passe
-perdu — supprimez alors `comptes.json`) :
+Le premier compte se crée depuis la languette « Compte », sans rien installer.
+Il prend l'identifiant `patron` par défaut, invisible à l'usage. Pour en ajouter
+d'autres (ou repartir de zéro après un mot de passe perdu — supprimez alors
+`comptes.json`) :
 
 ```bash
 npm run compte            # questions interactives
@@ -118,7 +122,9 @@ Le script contrôle, sans rien installer ni toucher aux vraies données :
   sans en-tête maison, fichiers sensibles non servis, traversée de dossier
   bloquée, enregistrement valide et refus d'un contenu invalide ;
 - la création du premier compte : mot de passe trop court refusé, porte
-  définitivement close dès qu'un compte existe.
+  définitivement close dès qu'un compte existe ;
+- la connexion par mot de passe seul, telle que l'utilise la languette
+  « Compte ».
 
 ## Structure
 
@@ -127,6 +133,7 @@ index.html               le site public
 assets/css/styles.css    mise en forme (bois sombre, laiton)
 assets/js/horaires.js    calcul des horaires, partagé site / serveur / tests
 assets/js/app.js         rendu du site public
+assets/js/compte.js      tiroir « Compte » du bord droit
 admin/                   espace d'administration (premier compte, connexion, éditeur)
 serveur/serveur.js       serveur HTTP : site, admin et API
 serveur/auth.js          comptes, mots de passe, sessions

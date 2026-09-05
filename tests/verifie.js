@@ -249,6 +249,12 @@ auth.fermerSession(connexion.jeton);
 egal('la session fermée n\'est plus valable', auth.session(connexion.jeton), null);
 egal('un jeton inventé ne donne rien', auth.session('0'.repeat(64)), null);
 
+var sansIdentifiant = auth.connecter('', MDP, 'test-seul');
+egal('connexion avec le mot de passe seul, sans identifiant', sansIdentifiant.ok, true);
+egal('le compte retrouvé est le bon', sansIdentifiant.identifiant, 'patron');
+auth.fermerSession(sansIdentifiant.jeton);
+egal('mot de passe seul incorrect : refusé', auth.connecter('', 'incorrect', 'test-seul-ko').ok, false);
+
 egal('connexion avec un mauvais mot de passe', auth.connecter('patron', 'incorrect', 'test-ko').ok, false);
 egal('connexion avec un identifiant inconnu', auth.connecter('inconnu', MDP, 'test-ko2').ok, false);
 
@@ -342,6 +348,7 @@ async function testerServeur() {
 
     var sessionAnonyme = await (await fetch(base + '/api/session')).json();
     egal('la session est vide au départ', sessionAnonyme.connecte, false);
+    egal('le tiroir sait qu\'un compte existe déjà', sessionAnonyme.compteExiste, true);
 
     /* --- Connexion --- */
     var mauvaise = await fetch(base + '/api/connexion', {
@@ -361,6 +368,18 @@ async function testerServeur() {
       body: JSON.stringify({ identifiant: 'patron', motDePasse: MDP }),
     });
     egal('la connexion réussit', bonne.status, 200);
+
+    var parMotDePasseSeul = await fetch(base + '/api/connexion', {
+      method: 'POST', headers: entetes,
+      body: JSON.stringify({ motDePasse: MDP }),
+    });
+    egal('le tiroir se connecte avec le mot de passe seul', parMotDePasseSeul.status, 200);
+
+    var mauvaisSeul = await fetch(base + '/api/connexion', {
+      method: 'POST', headers: entetes,
+      body: JSON.stringify({ motDePasse: 'pas-le-bon-mot-de-passe' }),
+    });
+    egal('un mauvais mot de passe seul est refusé', mauvaisSeul.status, 401);
 
     var cookie = (bonne.headers.get('set-cookie') || '').split(';')[0];
     verifier('un cookie de session est posé', cookie.indexOf('cafe_brun_session=') === 0);
@@ -481,11 +500,17 @@ async function testerInstallation() {
     });
     egal('la création sans en-tête maison est refusée', sansEntete.status, 403);
 
+    var sessionVierge = await (await fetch(base + '/api/session')).json();
+    egal('le tiroir sait qu\'aucun compte n\'existe encore', sessionVierge.compteExiste, false);
+
+    // Le tiroir n'envoie qu'un mot de passe : l'identifiant est implicite.
     var creation = await fetch(base + '/api/installation', {
       method: 'POST', headers: entetes,
-      body: JSON.stringify({ identifiant: 'patron', motDePasse: MDP }),
+      body: JSON.stringify({ motDePasse: MDP }),
     });
-    egal('le premier compte est créé', creation.status, 201);
+    egal('le premier compte est créé avec le mot de passe seul', creation.status, 201);
+    egal('il porte l\'identifiant par défaut',
+      (await creation.clone().json()).identifiant, auth.IDENTIFIANT_PAR_DEFAUT);
     verifier('la création connecte directement',
       (creation.headers.get('set-cookie') || '').indexOf('cafe_brun_session=') === 0);
 

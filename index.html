@@ -225,8 +225,26 @@
     <p class="pied__credit" id="credit-site" hidden></p>
   </footer>
 
+  <!-- Tiroir « Compte » : languette discrète sur le bord droit -->
+  <div class="tiroir" id="tiroir">
+    <button class="tiroir__languette" type="button" id="tiroir-languette"
+            aria-expanded="false" aria-controls="tiroir-panneau">
+      <span class="tiroir__languette-texte">Compte</span>
+    </button>
+
+    <aside class="tiroir__panneau" id="tiroir-panneau" hidden
+           aria-label="Espace de modification du site">
+      <div class="tiroir__entete">
+        <h2 class="tiroir__titre">Compte</h2>
+        <button class="tiroir__fermer" type="button" id="tiroir-fermer" aria-label="Fermer">×</button>
+      </div>
+      <div class="tiroir__corps" id="tiroir-corps"></div>
+    </aside>
+  </div>
+
   <script src="data/contenu.js"></script>
   <script src="assets/js/horaires.js"></script>
   <script src="assets/js/app.js"></script>
+  <script src="assets/js/compte.js"></script>
 </body>
 </html>

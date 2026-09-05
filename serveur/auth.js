@@ -22,6 +22,10 @@ var TENTATIVES_MAX = 5;                        // avant blocage temporaire
 var FENETRE_BLOCAGE_MS = 15 * 60 * 1000;       // durée du blocage
 var LONGUEUR_MIN_MOT_DE_PASSE = 10;
 
+// Le site n'a normalement qu'un compte : on peut alors se connecter avec le
+// seul mot de passe, sans avoir à retenir d'identifiant.
+var IDENTIFIANT_PAR_DEFAUT = 'patron';
+
 /* ---------------------------------------------------------------
  * Mots de passe
  * ------------------------------------------------------------- */
@@ -80,7 +84,7 @@ function trouverCompte(identifiant) {
 }
 
 function creerCompte(identifiant, motDePasse) {
-  identifiant = String(identifiant || '').trim();
+  identifiant = String(identifiant || '').trim() || IDENTIFIANT_PAR_DEFAUT;
   if (!/^[\wàâçéèêëîïôûùüÿñæœ .'-]{2,40}$/i.test(identifiant)) {
     throw new Error('Identifiant invalide (2 à 40 caractères).');
   }
@@ -185,6 +189,17 @@ function oublierEchecs(cle) {
  * ------------------------------------------------------------- */
 
 /**
+ * Retrouve le compte visé. Sans identifiant, on accepte le mot de passe seul
+ * tant qu'il n'existe qu'un compte — le cas courant pour ce site.
+ */
+function resoudreCompte(identifiant) {
+  if (String(identifiant || '').trim() !== '') return trouverCompte(identifiant);
+
+  var comptes = lireComptes();
+  return comptes.length === 1 ? comptes[0] : null;
+}
+
+/**
  * @returns {{ok: true, jeton: string, identifiant: string}
  *           | {ok: false, message: string, attente?: number}}
  */
@@ -198,7 +213,7 @@ function connecter(identifiant, motDePasse, cleLimite) {
     };
   }
 
-  var compte = trouverCompte(identifiant);
+  var compte = resoudreCompte(identifiant);
 
   // Même coût de calcul avec ou sans compte : l'existence d'un
   // identifiant ne se devine pas au temps de réponse.
@@ -207,7 +222,13 @@ function connecter(identifiant, motDePasse, cleLimite) {
 
   if (!compte || !correct) {
     noterEchec(cleLimite);
-    return { ok: false, message: 'Identifiant ou mot de passe incorrect.' };
+    var sansIdentifiant = String(identifiant || '').trim() === '';
+    return {
+      ok: false,
+      message: sansIdentifiant && lireComptes().length > 1
+        ? 'Plusieurs comptes existent : précisez l\'identifiant.'
+        : (sansIdentifiant ? 'Mot de passe incorrect.' : 'Identifiant ou mot de passe incorrect.'),
+    };
   }
 
   oublierEchecs(cleLimite);
@@ -228,4 +249,5 @@ module.exports = {
   FICHIER_COMPTES: FICHIER_COMPTES,
   DUREE_SESSION_MS: DUREE_SESSION_MS,
   TENTATIVES_MAX: TENTATIVES_MAX,
+  IDENTIFIANT_PAR_DEFAUT: IDENTIFIANT_PAR_DEFAUT,
 };
