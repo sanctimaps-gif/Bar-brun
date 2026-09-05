@@ -258,6 +258,15 @@
       attrs: { href: '/admin/' },
     });
 
+    var changement = el('button', {
+      classe: 'bouton tiroir__bouton',
+      texte: 'Changer le mot de passe',
+      attrs: { type: 'button' },
+    });
+    changement.addEventListener('click', function () {
+      rendreChangement(identifiant);
+    });
+
     var deconnexion = el('button', {
       classe: 'bouton tiroir__bouton',
       texte: 'Se déconnecter',
@@ -270,7 +279,78 @@
     });
 
     corps.appendChild(lien);
+    corps.appendChild(changement);
     corps.appendChild(deconnexion);
+  }
+
+  /** Nouveau mot de passe, en fournissant l'ancien. */
+  function rendreChangement(identifiant) {
+    vider(corps);
+    corps.appendChild(message('Le nouveau mot de passe remplace l\'ancien immédiatement.'));
+
+    var ancien = champMotDePasse('Mot de passe actuel', 'current-password');
+    var nouveau = champMotDePasse('Nouveau mot de passe', 'new-password');
+    var confirmation = champMotDePasse('Confirmation', 'new-password');
+    var erreur = el('p', { classe: 'tiroir__erreur', attrs: { role: 'alert', hidden: '' } });
+
+    var bouton = el('button', {
+      classe: 'bouton bouton--plein tiroir__bouton',
+      texte: 'Changer le mot de passe',
+      attrs: { type: 'submit' },
+    });
+
+    var retour = el('button', {
+      classe: 'bouton tiroir__bouton',
+      texte: 'Retour',
+      attrs: { type: 'button' },
+    });
+    retour.addEventListener('click', function () { rendreConnecte(identifiant); });
+
+    var form = el('form', { classe: 'tiroir__formulaire' }, [
+      ancien.bloc, nouveau.bloc, confirmation.bloc, erreur, bouton, retour,
+      el('p', { classe: 'tiroir__aide', texte: '10 caractères minimum.' }),
+    ]);
+
+    form.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      erreur.hidden = true;
+
+      if (nouveau.saisie.value !== confirmation.saisie.value) {
+        erreur.textContent = 'Les deux nouveaux mots de passe ne correspondent pas.';
+        erreur.hidden = false;
+        return;
+      }
+
+      bouton.disabled = true;
+      bouton.textContent = 'Changement…';
+
+      appeler('/api/motdepasse', {
+        methode: 'POST',
+        corps: { ancien: ancien.saisie.value, nouveau: nouveau.saisie.value },
+      }).then(function (r) {
+        if (r.ok) {
+          vider(corps);
+          corps.appendChild(message('Mot de passe changé. C\'est le nouveau qu\'il faudra saisir désormais.'));
+          corps.appendChild(el('a', {
+            classe: 'bouton bouton--plein tiroir__bouton',
+            texte: 'Modifier le site',
+            attrs: { href: '/admin/' },
+          }));
+          return;
+        }
+        erreur.textContent = r.donnees.erreur || 'Changement impossible.';
+        erreur.hidden = false;
+      }).catch(function () {
+        erreur.textContent = 'Le serveur ne répond pas.';
+        erreur.hidden = false;
+      }).finally(function () {
+        bouton.disabled = false;
+        bouton.textContent = 'Changer le mot de passe';
+      });
+    });
+
+    corps.appendChild(form);
+    ancien.saisie.focus();
   }
 
   function champMotDePasse(libelle, autocompletion) {

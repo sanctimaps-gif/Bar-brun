@@ -18,8 +18,9 @@ npm start          # démarre le serveur
 **Tout passe par le site lui-même** : une languette discrète « Compte » longe le
 bord droit de la page. Au premier clic, elle propose de choisir le mot de passe ;
 ensuite, il suffit de le saisir pour arriver dans l'éditeur des horaires, de la
-carte et des événements. `/admin` reste accessible directement, avec le même
-comportement.
+carte et des événements. Une fois connecté, le même tiroir permet de **changer
+le mot de passe** en fournissant l'ancien. `/admin` reste accessible
+directement, avec le même comportement.
 
 Le port se change avec `PORT=3000 npm start`.
 
@@ -71,7 +72,9 @@ npm run compte -- patron  # identifiant en argument, mot de passe demandé
 - Le mot de passe fait **10 caractères minimum** et n'est jamais stocké en
   clair : `comptes.json` ne contient qu'une empreinte **scrypt** avec sel.
 - `comptes.json` n'est **pas versionné** (voir `.gitignore`).
-- Le mot de passe se change depuis l'admin, bouton « Mot de passe ».
+- Le mot de passe se change depuis le tiroir « Compte » du site, ou depuis
+  l'éditeur (bouton « Mot de passe ») : les deux demandent l'ancien mot de
+  passe et refusent tout nouveau mot de passe trop court.
 - Les sessions durent 12 heures et vivent en mémoire : redémarrer le serveur
   déconnecte tout le monde.
 - Après 5 échecs de connexion, l'adresse est bloquée 15 minutes.
@@ -124,7 +127,9 @@ Le script contrôle, sans rien installer ni toucher aux vraies données :
 - la création du premier compte : mot de passe trop court refusé, porte
   définitivement close dès qu'un compte existe ;
 - la connexion par mot de passe seul, telle que l'utilise la languette
-  « Compte ».
+  « Compte » ;
+- le changement de mot de passe : ancien mot de passe exigé, nouveau mot de
+  passe trop court refusé, ancien devenu inopérant après le changement.
 
 ## Structure
 

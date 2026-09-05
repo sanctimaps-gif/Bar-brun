@@ -443,6 +443,51 @@ async function testerServeur() {
     verifier('/admin affiche l\'éditeur une fois connecté',
       pageConnectee.indexOf('panneau-horaires') !== -1);
 
+    /* --- Changement de mot de passe depuis le tiroir --- */
+    var NOUVEAU_MDP = 'nouvelle-ardoise-du-comptoir';
+
+    var mauvaisAncien = await fetch(base + '/api/motdepasse', {
+      method: 'POST', headers: entetesConnecte,
+      body: JSON.stringify({ ancien: 'pas-le-bon', nouveau: NOUVEAU_MDP }),
+    });
+    egal('changer le mot de passe sans connaître l\'ancien est refusé', mauvaisAncien.status, 400);
+
+    var tropCourt = await fetch(base + '/api/motdepasse', {
+      method: 'POST', headers: entetesConnecte,
+      body: JSON.stringify({ ancien: MDP, nouveau: 'court' }),
+    });
+    egal('un nouveau mot de passe trop court est refusé', tropCourt.status, 400);
+
+    var sansEnteteMdp = await fetch(base + '/api/motdepasse', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: cookie },
+      body: JSON.stringify({ ancien: MDP, nouveau: NOUVEAU_MDP }),
+    });
+    egal('le changement sans en-tête maison est refusé', sansEnteteMdp.status, 403);
+
+    egal('après ces refus, l\'ancien mot de passe marche toujours',
+      (await fetch(base + '/api/connexion', {
+        method: 'POST', headers: entetes, body: JSON.stringify({ motDePasse: MDP }),
+      })).status, 200);
+
+    var changement = await fetch(base + '/api/motdepasse', {
+      method: 'POST', headers: entetesConnecte,
+      body: JSON.stringify({ ancien: MDP, nouveau: NOUVEAU_MDP }),
+    });
+    egal('le mot de passe est changé avec l\'ancien', changement.status, 200);
+
+    egal('l\'ancien mot de passe ne fonctionne plus',
+      (await fetch(base + '/api/connexion', {
+        method: 'POST', headers: entetes, body: JSON.stringify({ motDePasse: MDP }),
+      })).status, 401);
+
+    var avecNouveau = await fetch(base + '/api/connexion', {
+      method: 'POST', headers: entetes, body: JSON.stringify({ motDePasse: NOUVEAU_MDP }),
+    });
+    egal('le nouveau mot de passe fonctionne', avecNouveau.status, 200);
+
+    verifier('le nouveau mot de passe n\'est pas stocké en clair',
+      fs.readFileSync(process.env.CAFE_BRUN_COMPTES, 'utf8').indexOf(NOUVEAU_MDP) === -1);
+
     /* --- Déconnexion --- */
     var deconnexion = await fetch(base + '/api/deconnexion', {
       method: 'POST', headers: entetesConnecte,
