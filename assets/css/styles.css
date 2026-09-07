@@ -646,23 +646,28 @@ a:hover { color: var(--texte); }
   flex-direction: row-reverse;
 }
 
-/* Languette discrète collée au bord droit : elle ne se remarque qu'au survol,
-   mais reste un vrai bouton, accessible au clavier. */
+/* Languette collée au bord droit : petite, mais franchement visible —
+   sans quoi personne ne la trouve. */
 .tiroir__languette {
   flex: none;
-  background: var(--fond-carte);
-  border: 1px solid var(--bordure);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  background: rgba(200, 150, 62, .16);
+  border: 1px solid var(--laiton);
   border-right: 0;
   border-radius: var(--rayon) 0 0 var(--rayon);
-  color: var(--texte-faible);
+  color: var(--laiton-clair);
   font: inherit;
-  font-size: .78rem;
-  letter-spacing: .12em;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  padding: 1.1rem .45rem;
+  padding: 1.2rem .55rem;
   cursor: pointer;
-  opacity: .45;
-  transition: opacity .15s ease, color .15s ease, border-color .15s ease;
+  box-shadow: -6px 0 22px rgba(0, 0, 0, .4);
+  transition: background .15s ease, color .15s ease;
 }
 
 .tiroir__languette-texte {
@@ -670,12 +675,19 @@ a:hover { color: var(--texte); }
   text-orientation: mixed;
 }
 
+/* Petit cadenas, pour que la languette se lise d'un coup d'œil. */
+.tiroir__languette-icone {
+  display: block;
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
 .tiroir__languette:hover,
 .tiroir__languette:focus-visible,
 .tiroir[data-ouvert='true'] .tiroir__languette {
-  opacity: 1;
-  color: var(--laiton-clair);
-  border-color: var(--laiton);
+  background: var(--laiton);
+  color: #1a120b;
 }
 
 .tiroir__panneau {

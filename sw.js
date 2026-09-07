@@ -4,7 +4,7 @@
    Après une modification du contenu, incrémenter VERSION ci-dessous
    pour que les visiteurs reçoivent la nouvelle version. */
 
-var VERSION = 'cafe-brun-v3';
+var VERSION = 'cafe-brun-v4';
 
 var FICHIERS = [
   './',
