@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node serveur/serveur.js",
     "compte": "node serveur/creer-compte.js",
-    "generer": "node -e \"require('./serveur/stockage.js').regenerer()\"",
+    "generer": "node serveur/regenerer.js",
     "test": "node tests/verifie.js"
   },
   "license": "UNLICENSED",

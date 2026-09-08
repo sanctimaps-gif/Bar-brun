@@ -1,0 +1,29 @@
+# Mise en ligne du Café Brun sur Render (https://render.com).
+#
+#   New → Web Service → connecter ce dépôt → Render lit ce fichier.
+#
+# Le disque « contenu » garde les horaires, la carte, les événements et le
+# compte d'administration entre deux redémarrages. Sans lui, tout ce qui est
+# modifié depuis l'espace « Compte » serait perdu au prochain déploiement :
+# c'est pourquoi il n'est pas facultatif ici.
+
+services:
+  - type: web
+    name: cafe-brun
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter          # le plan gratuit ne permet pas de disque persistant
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: COOKIE_SECURE   # Render sert en HTTPS : le cookie ne circule qu'en chiffré
+        value: 1
+      - key: CAFE_BRUN_DATA
+        value: /data
+      - key: CAFE_BRUN_COMPTES
+        value: /data/comptes.json
+    disk:
+      name: contenu
+      mountPath: /data
+      sizeGB: 1

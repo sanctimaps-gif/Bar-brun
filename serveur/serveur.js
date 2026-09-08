@@ -153,11 +153,20 @@ function resoudre(cheminUrl) {
   var relatif = decodeURIComponent(cheminUrl).replace(/^\/+/, '');
   if (relatif === '') relatif = 'index.html';
 
-  var absolu = path.normalize(path.join(RACINE, relatif));
-  if (absolu !== RACINE && !absolu.startsWith(RACINE + path.sep)) return null;
+  // Le contenu peut vivre hors du dépôt (CAFE_BRUN_DATA, utile en ligne avec
+  // un disque persistant) : /data/… doit alors pointer là où l'admin écrit,
+  // sans quoi le site public afficherait encore l'ancienne version.
+  var racine = RACINE;
+  if (relatif === 'data' || relatif.indexOf('data/') === 0) {
+    racine = stockage.DOSSIER_DATA;
+    relatif = relatif.slice(4).replace(/^\/+/, '');
+  }
+
+  var absolu = path.normalize(path.join(racine, relatif));
+  if (absolu !== racine && !absolu.startsWith(racine + path.sep)) return null;
 
   // Le fichier des comptes et les sauvegardes ne sont jamais servis.
-  var interdits = [path.join(RACINE, 'comptes.json'), path.join(RACINE, 'data', 'sauvegardes')];
+  var interdits = [auth.FICHIER_COMPTES, stockage.DOSSIER_SAUVEGARDES];
   if (interdits.some(function (i) { return absolu === i || absolu.startsWith(i + path.sep); })) return null;
 
   try {

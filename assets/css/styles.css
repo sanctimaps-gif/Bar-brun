@@ -724,6 +724,15 @@ a:hover { color: var(--texte); }
 .tiroir__fermer:hover { color: var(--texte); }
 
 .tiroir__texte { color: var(--texte-doux); font-size: .9rem; }
+
+.tiroir__etapes {
+  margin: 0 0 .6rem;
+  padding-left: 1.1rem;
+  color: var(--texte-doux);
+  font-size: .87rem;
+}
+.tiroir__etapes li { margin-bottom: .45rem; }
+.tiroir__etapes li::marker { color: var(--laiton); font-weight: 600; }
 .tiroir__aide { color: var(--texte-faible); font-size: .8rem; margin: .6rem 0 0; }
 
 .tiroir__formulaire { display: grid; gap: .8rem; margin-top: 1rem; }

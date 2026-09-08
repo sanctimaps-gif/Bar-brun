@@ -32,6 +32,10 @@ var validation = require(path.join(RACINE, 'serveur/validation.js'));
 var stockage = require(path.join(RACINE, 'serveur/stockage.js'));
 var auth = require(path.join(RACINE, 'serveur/auth.js'));
 
+// Un dossier de données neuf ne contient que le JSON : le fichier lu par le
+// site public en est dérivé, exactement comme au premier démarrage en ligne.
+stockage.regenerer();
+
 /* ---------------------------------------------------------------
  * Micro-harnais
  * ------------------------------------------------------------- */
@@ -430,6 +434,12 @@ async function testerServeur() {
 
     verifier('une sauvegarde de la version précédente a été créée',
       fs.readdirSync(path.join(process.env.CAFE_BRUN_DATA, 'sauvegardes')).length > 0);
+
+    // Le contenu vit ici hors du dépôt (CAFE_BRUN_DATA) : le site public doit
+    // malgré tout servir la version que l'admin vient d'écrire.
+    var contenuServi = await (await fetch(base + '/data/contenu.js')).text();
+    verifier('le site public sert le contenu fraîchement enregistré',
+      contenuServi.indexOf('Concert test') !== -1);
 
     var ecritureSansEntete = await fetch(base + '/api/contenu', {
       method: 'PUT', headers: { 'Content-Type': 'application/json', Cookie: cookie },

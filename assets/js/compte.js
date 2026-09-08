@@ -128,15 +128,20 @@
       });
   }
 
-  /** Le site est consulté sans son serveur : rien à proposer ici. */
+  /** Le site est consulté sans son serveur : on explique quoi faire. */
   function rendreIndisponible() {
     vider(corps);
+    corps.appendChild(message('Pour modifier le site, il faut le démarrer.'));
+
+    var etapes = el('ol', { classe: 'tiroir__etapes' }, [
+      el('li', { texte: 'Ouvrez le dossier du site sur votre ordinateur.' }),
+      el('li', { texte: 'Double-cliquez sur « demarrer.command » (Mac) ou « demarrer.bat » (Windows).' }),
+      el('li', { texte: 'Le site se rouvre tout seul, et cette languette donne alors accès aux horaires, à la carte et aux événements.' }),
+    ]);
+    corps.appendChild(etapes);
+
     corps.appendChild(message(
-      'L\'espace de modification n\'est pas accessible depuis cette version du site.'
-    ));
-    corps.appendChild(message(
-      'Il faut ouvrir le site servi par son serveur (npm start) pour changer les ' +
-      'horaires, la carte ou les événements.',
+      'Le fichier DEMARRER.md, dans le même dossier, détaille la marche à suivre.',
       'tiroir__aide'
     ));
   }

@@ -8,12 +8,21 @@ Aucune dépendance à installer : tout tourne avec Node seul (version 18 ou plus
 
 ## Démarrage
 
+**Le plus simple — un double-clic** sur `demarrer.command` (Mac, Linux) ou
+`demarrer.bat` (Windows) : le site s'ouvre tout seul dans le navigateur, espace
+« Compte » compris. Il ne demande que Node.js installé, et le dit clairement
+s'il manque.
+
+En ligne de commande, c'est la même chose :
+
 ```bash
 npm start          # démarre le serveur
 
 #   Site   → http://localhost:8000/
 #   Admin  → http://localhost:8000/admin
 ```
+
+`DEMARRER.md` explique tout cela pas à pas, y compris la mise en ligne.
 
 **Tout passe par le site lui-même** : une languette discrète « Compte » longe le
 bord droit de la page. Au premier clic, elle propose de choisir le mot de passe ;
@@ -106,6 +115,11 @@ npm run generer     # régénère data/contenu.js
 Après une mise en ligne, pensez à incrémenter `VERSION` dans `sw.js` pour que
 les visiteurs ayant déjà la page en cache reçoivent la nouvelle version.
 
+`CAFE_BRUN_DATA` déplace ce dossier hors du dépôt — indispensable en ligne, où
+le contenu doit survivre aux redéploiements sur un disque persistant. Le serveur
+sert alors `/data/…` depuis ce dossier, si bien que le site public affiche
+toujours ce que l'espace « Compte » vient d'enregistrer.
+
 ## Vérifications
 
 ```bash
@@ -131,10 +145,25 @@ Le script contrôle, sans rien installer ni toucher aux vraies données :
 - le changement de mot de passe : ancien mot de passe exigé, nouveau mot de
   passe trop court refusé, ancien devenu inopérant après le changement.
 
+## Mise en ligne
+
+- **La vitrine seule, gratuitement** : GitHub Pages sur cette branche suffit.
+  L'espace « Compte » y indiquera qu'il faut démarrer le site, puisque Pages ne
+  fait que servir des fichiers.
+- **Le site complet** : n'importe quel hébergeur exécutant Node. `Dockerfile` et
+  `render.yaml` sont fournis — sur Render, « New Web Service » puis connexion du
+  dépôt suffisent. Prévoyez un **disque persistant** monté sur `/data` : sans
+  lui, les modifications faites depuis l'espace « Compte » disparaîtraient au
+  premier redéploiement.
+
+Détails et pièges dans `DEMARRER.md`.
+
 ## Structure
 
 ```
 index.html               le site public
+demarrer.command         lanceur Mac / Linux (double-clic)
+demarrer.bat             lanceur Windows (double-clic)
 assets/css/styles.css    mise en forme (bois sombre, laiton)
 assets/js/horaires.js    calcul des horaires, partagé site / serveur / tests
 assets/js/app.js         rendu du site public
